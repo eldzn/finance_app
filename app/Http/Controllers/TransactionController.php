@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,12 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
+        $transactions = Transaction::with('category')
+            ->where('user_id', auth()->id())
+            ->orderBy('date', 'desc')
+            ->paginate(10);
+
+        return view('transactions.index', compact('transactions'));
     }
 
     /**
@@ -20,7 +26,15 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        //
+        $categories = collect();
+
+        if (old('type')) {
+            $categories = Category::where('user_id', auth()->id())
+                ->where('type', old('type'))
+                ->get();
+        }
+
+        return view('transactions.create', compact('categories'));
     }
 
     /**
