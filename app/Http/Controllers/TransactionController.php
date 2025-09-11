@@ -70,6 +70,10 @@ class TransactionController extends Controller
      */
     public function edit(Transaction $transaction)
     {
+        if ($transaction->user_id !== auth()->id()) {
+            abort(403, 'Недостаточно прав');
+        }
+
         return view('transactions.edit', compact('transaction'));
     }
 
