@@ -12,7 +12,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::where('user_id', auth()->id())->withCount('transactions')->get();
+        return view('categories.index', compact('categories'));
     }
 
     /**
@@ -20,7 +21,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('categories.create');
     }
 
     /**
@@ -28,7 +29,14 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validateData = $request->validate([
+            'name' => 'required|max:255' . auth()->id(),
+            'type' => 'required|in:income,expense',
+        ]);
+
+        auth()->user()->categories()->create($validateData);
+
+        return redirect()->route('categories.index');
     }
 
     /**
@@ -44,7 +52,11 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        if ($category->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        return view('categories.edit', compact('category'));
     }
 
     /**
@@ -52,7 +64,18 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        if ($category->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $validateData = $request->validate([
+            'name' => 'required|max:255' . auth()->id(),
+            'type' => 'required|in:income,expense',
+        ]);
+
+        $category->update($validateData);
+
+        return redirect()->route('categories.index');
     }
 
     /**
@@ -60,6 +83,16 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        if ($category->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($category->transactions()->exists()) {
+            return redirect()->route('categories.index');
+        }
+
+        $category->delete();
+
+        return redirect()->route('categories.index');
     }
 }

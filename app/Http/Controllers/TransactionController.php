@@ -26,12 +26,12 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        $categories = collect();
+        $categories = Category::where('user_id', auth()->id())
+            ->orderBy('name')
+            ->get();
 
         if (old('type')) {
-            $categories = Category::where('user_id', auth()->id())
-                ->where('type', old('type'))
-                ->get();
+            $categories = $categories->where('type', old('type'));
         }
 
         return view('transactions.create', compact('categories'));
@@ -74,7 +74,11 @@ class TransactionController extends Controller
             abort(403, 'Недостаточно прав');
         }
 
-        return view('transactions.edit', compact('transaction'));
+        $categories = Category::where('user_id', auth()->id())
+            ->where('type', $transaction->type)
+            ->get();
+
+        return view('transactions.edit', compact('transaction', 'categories'));
     }
 
     /**
@@ -94,7 +98,7 @@ class TransactionController extends Controller
             'description' => 'nullable|string|max:500'
         ]);
 
-        $transaction::update($validated);
+        $transaction->update($validated);
 
         return redirect()->route('transactions.index');
     }
@@ -104,6 +108,7 @@ class TransactionController extends Controller
      */
     public function destroy(Transaction $transaction)
     {
-        //
+        $transaction->delete();
+        return redirect()->route('transactions.index');
     }
 }

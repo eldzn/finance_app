@@ -3,7 +3,6 @@
 @section('content')
     <div class="container mx-auto px-4 py-8 max-w-7xl">
         <div class="animate-fade-in">
-            <!-- Header -->
             <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -19,7 +18,6 @@
             </div>
 
             @if($transactions->count() > 0)
-                <!-- Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-green-500">
                         <div class="flex items-center justify-between">
@@ -64,7 +62,6 @@
                     </div>
                 </div>
 
-                <!-- Transactions Table -->
                 <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full">
@@ -94,7 +91,7 @@
                                         <div class="flex items-center gap-2">
                                             <div class="w-2 h-2 rounded-full bg-blue-400"></div>
                                             <span class="text-sm font-medium text-gray-900">
-                                            {{ $transaction->date->format('d.m.Y') }}
+                                            {{ $transaction->date }}
                                         </span>
                                         </div>
                                     </td>
@@ -152,13 +149,11 @@
                     </div>
                 </div>
 
-                <!-- Pagination -->
                 <div class="mt-8">
                     {{ $transactions->links() }}
                 </div>
 
             @else
-                <!-- Empty State -->
                 <div class="bg-white rounded-2xl shadow-lg p-12 text-center max-w-2xl mx-auto">
                     <div class="text-gray-300 mb-6">
                         <svg class="w-24 h-24 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -7,11 +7,9 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
@@ -28,36 +26,9 @@
 <div class="min-h-screen">
     @include('layouts.navigation')
 
-    <!-- Page Content -->
     <main class="animate-fade-in">
         @yield('content')
     </main>
 </div>
-
-<script>
-    // Динамическая загрузка категорий при изменении типа
-    document.addEventListener('DOMContentLoaded', function() {
-        const typeSelect = document.getElementById('type');
-        const categorySelect = document.getElementById('category_id');
-
-        if (typeSelect && categorySelect) {
-            typeSelect.addEventListener('change', function() {
-                const type = this.value;
-                if (type) {
-                    fetch(`/categories/by-type/${type}`)
-                        .then(response => response.json())
-                        .then(categories => {
-                            categorySelect.innerHTML = '<option value="">-- Выберите категорию --</option>';
-                            categories.forEach(category => {
-                                categorySelect.innerHTML += `<option value="${category.id}">${category.name}</option>`;
-                            });
-                        });
-                } else {
-                    categorySelect.innerHTML = '<option value="">-- Выберите категорию --</option>';
-                }
-            });
-        }
-    });
-</script>
 </body>
 </html>
